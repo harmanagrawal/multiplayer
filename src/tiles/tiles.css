@@ -2,14 +2,27 @@
 :root {
     --square-width: 100px;
     --square-height: 100px;
+    --piece-size: calc(var(--square-width) * 0.8);
   }
   
   .Square {
     width: var(--square-width);
     height: var(--square-height);
     background-color: crimson;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    display: flex;
   }
 
   .Square:hover{
     cursor: pointer;
   }
+  
+  .piece {
+    width: var(--piece-size);
+    height: var(--piece-size);
+    border-radius: 50%;
+    align-items: center;
+  }
+  

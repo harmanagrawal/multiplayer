@@ -52,6 +52,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   font-size: 1rem;
   font-weight: bold;
   color: navajowhite;
@@ -73,4 +74,12 @@ body {
   background-color: crimson;
   text-align: center;
   color: ivory;
+}
+
+.piece.black {
+  background-color: black;
+}
+
+.piece.white {
+  background-color: white;
 }

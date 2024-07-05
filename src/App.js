@@ -5,17 +5,22 @@ import Tiles from './tiles/tiles';
 function App() {
   const [rows, setRows] = useState(4);
   const [cols, setCols] = useState(4);
+  const [board, setBoard] = useState(initializeBoard(4, 4));
+  const [selectedPiece, setSelectedPiece] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [currentPlayer, setCurrentPlayer] = useState('white');
 
   useEffect(() => {
     const maxDimension = 400; 
     const squareSize = Math.min(maxDimension / rows, maxDimension / cols);
     setSquareDimensions(squareSize, squareSize);
+    setBoard(initializeBoard(rows, cols));
   }, [rows, cols]);
 
-  let k = 1;
-  let renderGameBoard = Array.from({ length: rows }, (_, i) =>
-    Array.from({ length: cols }, (_, j) => k++)
-  );
+  //let k = 1;
+  //let renderGameBoard = Array.from({ length: rows }, (_, i) =>
+  //  Array.from({ length: cols }, (_, j) => k++)
+  //);
 
 
   const handleRowsChange = (e) => {
@@ -26,6 +31,43 @@ function App() {
     setCols(Number(e.target.value));
   };
 
+  const handleTileClick = (row, col) => {
+    setErrorMessage('');
+
+    if (selectedPiece) {
+      if (!board[row][col]) {
+        const newBoard = board.map(row => row.slice());
+        newBoard[selectedPiece.row][selectedPiece.col] = null;
+        newBoard[row][col] = selectedPiece.piece;
+        setBoard(newBoard);
+        setSelectedPiece(null);
+        setCurrentPlayer(currentPlayer === 'white' ? 'black' : 'white');
+      } else {
+        setErrorMessage('This position is already occupied');
+      }
+    } else if (board[row][col] && board[row][col] === currentPlayer) {
+      const newBoard = board.map(row => row.slice());
+      newBoard[row][col] = null; // Remove the clicked piece
+      setBoard(newBoard);
+      setSelectedPiece({ row, col, piece: board[row][col] });
+    } else if (board[row][col]){
+      setErrorMessage('Not your turn');
+    } else {
+      setErrorMessage('There is no piece here');
+    }
+  };
+
+  /*const handleTileClick = (row, col) => {
+    // Check if a white piece is clicked
+    if (whitePieces.some(piece => piece.row === row && piece.col === col)) {
+      setWhitePieces(whitePieces.filter(piece => piece.row !== row || piece.col !== col));
+    }
+
+    // Check if a black piece is clicked
+    if (blackPieces.some(piece => piece.row === row && piece.col === col)) {
+      setBlackPieces(blackPieces.filter(piece => piece.row !== row || piece.col !== col));
+    }
+  };*/
 
   return (
     <div className="main-div">
@@ -52,10 +94,13 @@ function App() {
             display: 'grid',
             gridTemplateColumns: `repeat(${cols}, var(--square-width))`,
             gap: '10px' }}>
-          {renderGameBoard.map(row => 
-            row.map(value => <Tiles key={value} value={value} />)
+          {board.map((row, rowIndex) =>
+            row.map((tile, colIndex) => 
+              <Tiles key={`${rowIndex}-${colIndex}`} value={tile} onClick={() => handleTileClick(rowIndex, colIndex)} />
+            )
           )}
         </div>
+        <div className='error message'>{errorMessage}</div>
       </div>
     </div>
   );
@@ -63,6 +108,18 @@ function App() {
   function setSquareDimensions(width, height) {
     document.documentElement.style.setProperty('--square-width', width + 'px');
     document.documentElement.style.setProperty('--square-height', height + 'px');
+  }
+
+  function initializeBoard(rows, cols) {
+    const newBoard = Array.from({ length: rows }, () => Array(cols).fill(null));
+    // Place two black and two white pieces
+    if (rows > 1 && cols > 1) {
+      newBoard[0][0] = 'white';
+      newBoard[1][0] = 'white';
+      newBoard[rows - 1][cols - 1] = 'black';
+      newBoard[rows - 2][cols - 1] = 'black';
+    }
+    return newBoard;
   }
 }
 
