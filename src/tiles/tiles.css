@@ -1,0 +1,15 @@
+/* tiles.css */
+:root {
+    --square-width: 100px;
+    --square-height: 100px;
+  }
+  
+  .Square {
+    width: var(--square-width);
+    height: var(--square-height);
+    background-color: crimson;
+  }
+
+  .Square:hover{
+    cursor: pointer;
+  }

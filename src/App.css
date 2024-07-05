@@ -14,14 +14,14 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  /* background-color: #282c34; */
+  max-height: 12vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: ivory;
 }
 
 .App-link {
@@ -35,4 +35,42 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.main-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body {
+  background-color: cadetblue;
+}
+
+.input{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: navajowhite;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.moveDetection {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.left, .right {
+  height: 25px;
+  width: 100px;
+  background-color: crimson;
+  text-align: center;
+  color: ivory;
 }
