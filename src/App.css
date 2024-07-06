@@ -68,7 +68,7 @@ body {
   justify-content: space-between;
 }
 
-.left, .right {
+.white, .black {
   height: 25px;
   width: 100px;
   background-color: crimson;
