@@ -24,7 +24,7 @@ function Navbar() {
         <div className='Navbar-container'>
             <ul className={click ? 'nav-menu-active' : 'nav-menu'}>
                 <li className='nav-item'>
-                    <Link to='/' className='nav-links' onClick={closedMobileMenu}>Play</Link>
+                    <Link to={'/Dashboard'} className='nav-links' onClick={closedMobileMenu}>Play</Link>
                 </li>
                 <li className='nav-item'>
                     <Link to='/hints' className='nav-links' onClick={closedMobileMenu}>Hints</Link>
