@@ -12,7 +12,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/' element={<Dashboard />} />
           <Route path='/how-to-play' element={<howtoplay />} />
         </Routes>
       </Router>
