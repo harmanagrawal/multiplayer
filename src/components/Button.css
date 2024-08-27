@@ -1,0 +1,99 @@
+.Navbar {
+    background-color: #333; /* Navbar background color */
+    height: 80px; /* Height of the navbar */
+    display: flex; /* Flexbox layout */
+    justify-content: center; /* Center contents */
+    align-items: center; /* Center items vertically */
+    position: sticky; /* Make navbar sticky */
+    top: 0; /* Stick to top */
+    z-index: 999; /* Make sure navbar is on top */
+}
+
+.Navbar-container {
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Space out items */
+    align-items: center; /* Center items vertically */
+    width: 100%; /* Full width */
+    max-width: 1000px; /* Limit max width */
+    padding: 0 20px; /* Add some padding */
+}
+
+.navbar-logo {
+    color: #fff; /* White text */
+    font-size: 2rem; /* Font size */
+    text-decoration: none; /* Remove underline */
+    cursor: pointer; /* Pointer cursor */
+}
+
+.menu-icon {
+    display: none; /* Hide by default */
+    color: #fff; /* White color */
+}
+
+.nav-menu {
+    display: flex; /* Flexbox layout */
+    list-style: none; /* Remove bullet points */
+    text-align: center; /* Center text */
+    margin-right: -22px; /* Adjust margin */
+}
+
+.nav-item {
+    height: 80px; /* Full height */
+}
+
+.nav-links {
+    color: #fff; /* White text */
+    text-decoration: none; /* Remove underline */
+    padding: 0.5rem 1rem; /* Add padding */
+    height: 100%; /* Full height */
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center items vertically */
+}
+
+.nav-menu-active {
+    display: flex; /* Flexbox layout when active */
+}
+
+@media screen and (max-width: 960px) {
+    .menu-icon {
+        display: block; /* Show on small screens */
+        position: absolute; /* Absolute position */
+        top: 0; /* Stick to top */
+        right: 0; /* Stick to right */
+        transform: translate(-100%, 60%); /* Adjust position */
+        font-size: 1.8rem; /* Font size */
+        cursor: pointer; /* Pointer cursor */
+    }
+
+    .nav-menu {
+        display: none; /* Hide menu by default */
+    }
+
+    .nav-menu-active {
+        display: flex; /* Show menu when active */
+        flex-direction: column; /* Stack items vertically */
+        width: 100%; /* Full width */
+        height: calc(100vh - 80px); /* Full height minus navbar height */
+        position: absolute; /* Absolute position */
+        top: 80px; /* Below navbar */
+        left: 0; /* Stick to left */
+        background-color: #333; /* Same background color */
+    }
+
+    .nav-item {
+        width: 100%; /* Full width */
+    }
+
+    .nav-links {
+        text-align: center; /* Center text */
+        padding: 2rem; /* Add padding */
+        width: 100%; /* Full width */
+        display: table; /* Table layout */
+    }
+
+    .nav-links:hover {
+        background-color: #fff; /* Change background on hover */
+        color: #242424; /* Change text color on hover */
+        border-radius: 0; /* No border radius */
+    }
+}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Tiles from './tiles/tiles';
+import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
 function App() {
   const [rows, setRows] = useState(4);
@@ -101,14 +103,24 @@ function App() {
   }
 
   return (
-    <div className="main-div">
+    <div className='outer-div'>
+      <div className='main-div'>
+      <div>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path='/' exact />
+          <Route path='/how-to-play' element={<howtoplay />} />
+        </Routes>
+      </Router>
+      </div>
       <div>
         <header className="App-header">
           <h1>QuadroCount</h1>
         </header>
         <div className='moveDetection'>
-          <div className='white'>white</div>
-          <div className='black'>black</div>
+          <div className='white'>White</div>
+          <div className='black'>Black</div>
         </div>
         <div className='input'>
           <label>
@@ -131,8 +143,11 @@ function App() {
             )
           )}
         </div>
+      </div>
+      </div>
+      <div className='score-error'>
         <div className='score'>Score = {currentScore}</div>
-        <div className='error message'>{errorMessage}</div>
+        <div className='error'>{errorMessage}</div>
       </div>
     </div>
   );
