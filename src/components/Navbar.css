@@ -1,6 +1,6 @@
 .Navbar {
     background: crimson;
-    height: 60px;
+    height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,13 +8,14 @@
     position: sticky;
     top: 0;
     z-index: 999;
+    margin-bottom: -10px;
   }
   
   .Navbar-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 20px;
     max-width: 470px;
   }
 

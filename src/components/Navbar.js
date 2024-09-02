@@ -1,23 +1,29 @@
 import React, {useState} from 'react'
-import {Link} from 'react-router-dom'
-//import { Button } from './Button';
+import {Link, useNavigate} from 'react-router-dom'
 import './Navbar.css';
 
-function Navbar() {
+function Navbar({board, currentPlayer, whiteOccupied, blackOccupied, rows, cols}) { 
+
   const [click, setClick] = useState(false);
+  const navigate = useNavigate(); // Use navigate hook
 
   const handleClick = () => setClick(!click);
   const closedMobileMenu = () => setClick(false);
 
-  /*const showButton = () => {
-    if(window.innerWidth <= 960) {
-        setButton(false);
-    } else {
-        setButton(true);
-    }
-  }*/
+  const handleHintsClick = () => {
+    closedMobileMenu();
+    navigate('/hints', {
+      state: {
+        board,
+        currentPlayer,
+        whiteOccupied,
+        blackOccupied,
+        rows,
+        cols
+      }
+    });
+  };
 
- // window.addEventListener('resize', showButton);
   return (
     <>
     <nav className='Navbar'>
@@ -27,7 +33,8 @@ function Navbar() {
                     <Link to={'/'} className='nav-links' onClick={closedMobileMenu}>Play</Link>
                 </li>
                 <li className='nav-item'>
-                    <Link to='/hints' className='nav-links' onClick={closedMobileMenu}>Hints</Link>
+                    {/* Trigger the handleHintsClick on click */}
+                    <div className='nav-links' onClick={handleHintsClick}>Hints</div>
                 </li>
                 <li className='nav-item'>
                     <Link to='/how-to-play' className='nav-links' onClick={closedMobileMenu}>How to Play</Link>
@@ -39,4 +46,4 @@ function Navbar() {
   )
 }
 
-export default Navbar
+export default Navbar;

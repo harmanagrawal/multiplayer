@@ -1,0 +1,17 @@
+.hints-board {
+    margin-top: 160px;
+}
+
+.tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--square-width);
+    height: var(--square-height);
+    background-color: lightgray;
+    border: 1px solid black;
+}
+
+.valid-move {
+    background-color: yellow; /* Highlight valid move tiles */
+}
