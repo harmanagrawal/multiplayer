@@ -10,6 +10,19 @@ function Navbar({board, currentPlayer, whiteOccupied, blackOccupied, rows, cols}
   const handleClick = () => setClick(!click);
   const closedMobileMenu = () => setClick(false);
 
+  const handleGoBack = () => {
+    navigate(-1, {
+        state: {
+            board,
+            currentPlayer,
+            whiteOccupied,
+            blackOccupied,
+            rows,
+            cols
+        }
+    });
+};
+
   const handleHintsClick = () => {
     closedMobileMenu();
     navigate('/hints', {

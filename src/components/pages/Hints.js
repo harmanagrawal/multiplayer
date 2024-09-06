@@ -1,42 +1,69 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../App.css';
-import './Hints.css'; // Add CSS for the highlighted tiles
+import './Hints.css';
 
 function Hints() {
     const location = useLocation();
     const navigate = useNavigate();
+
+    // Debugging: Log the location state
+    console.log("Location State:", location.state);
+
+    // Handle undefined state
+    if (!location.state) {
+        console.error("No state found, redirecting...");
+        navigate('/'); // Redirect to the home page or another fallback page
+        return null;
+    }
+
     const { board, currentPlayer, whiteOccupied, blackOccupied, rows, cols } = location.state;
 
     const goBack = () => {
-        navigate(-1, { state: location.state }); // Go back to the previous page with the same state
+        // Manually pass state when navigating back
+        navigate('/', {
+            state: {
+                board,
+                currentPlayer,
+                whiteOccupied,
+                blackOccupied,
+                rows,
+                cols
+            }
+        });
     };
-
 
     const calculateValidMoves = () => {
         const occupied = currentPlayer === 'white' ? whiteOccupied : blackOccupied;
         const opponentOccupied = currentPlayer === 'white' ? blackOccupied : whiteOccupied;
-        const validMoves = [];
+        const validMovesForTile1 = [];
+        const validMovesForTile2 = [];
 
         const currentScore = calculateScore(occupied, opponentOccupied);
 
-        // Loop through all empty tiles and check if moving there reduces the score
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 if (!board[i][j]) {
-                    for (let k = 0; k < occupied.length; k++) {
-                        const tempOccupied = [...occupied];
-                        tempOccupied[k] = [i, j];
-                        const tempScore = calculateScore(tempOccupied, opponentOccupied);
-                        if (tempScore < currentScore) {
-                            validMoves.push([i, j]);
-                        }
+                    // Test the move for tile 1
+                    const tempOccupied1 = [...occupied];
+                    tempOccupied1[0] = [i, j];
+                    const tempScore1 = calculateScore(tempOccupied1, opponentOccupied);
+                    if (tempScore1 < currentScore) {
+                        validMovesForTile1.push([i, j]);
+                    }
+
+                    // Test the move for tile 2
+                    const tempOccupied2 = [...occupied];
+                    tempOccupied2[1] = [i, j];
+                    const tempScore2 = calculateScore(tempOccupied2, opponentOccupied);
+                    if (tempScore2 < currentScore) {
+                        validMovesForTile2.push([i, j]);
                     }
                 }
             }
         }
 
-        return validMoves;
+        return { validMovesForTile1, validMovesForTile2, occupied };
     };
 
     const calculateScore = (occupied, opponentOccupied) => {
@@ -56,7 +83,7 @@ function Hints() {
         return score;
     };
 
-    const validMoves = calculateValidMoves();
+    const { validMovesForTile1, validMovesForTile2, occupied } = calculateValidMoves();
 
     return (
         <div className='hints'>
@@ -68,14 +95,30 @@ function Hints() {
                 }}>
                 {board.map((row, rowIndex) =>
                     row.map((tile, colIndex) => {
-                        const isValidMove = validMoves.some(
+                        const isValidMoveForTile1 = validMovesForTile1.some(
                             ([validRow, validCol]) => validRow === rowIndex && validCol === colIndex
                         );
+
+                        const isValidMoveForTile2 = validMovesForTile2.some(
+                            ([validRow, validCol]) => validRow === rowIndex && validCol === colIndex
+                        );
+
+                        const isTile1Position = occupied[0][0] === rowIndex && occupied[0][1] === colIndex;
+                        const isTile2Position = occupied[1][0] === rowIndex && occupied[1][1] === colIndex;
+
+                        let tileClass = '';
+                        if (isValidMoveForTile1) tileClass = 'valid-move-tile1';
+                        if (isValidMoveForTile2) tileClass = 'valid-move-tile2';
+                        if (isValidMoveForTile1 && isValidMoveForTile2) tileClass = 'valid-move-both';
+
+                        let pieceClass = '';
+                        if (isTile1Position) pieceClass = 'tile1';
+                        if (isTile2Position) pieceClass = 'tile2';
 
                         return (
                             <div
                                 key={`${rowIndex}-${colIndex}`}
-                                className={`tile ${isValidMove ? 'valid-move' : ''}`}
+                                className={`tile ${tileClass} ${pieceClass}`}
                             >
                                 {tile}
                             </div>
@@ -83,6 +126,22 @@ function Hints() {
                     })
                 )}
             </div>
+
+            <div className="hint-key">
+                <div>
+                    <div className="key-square valid-move-tile1"></div>
+                    <span>Valid moves for Tile 1</span>
+                </div>
+                <div>
+                    <div className="key-square valid-move-tile2"></div>
+                    <span>Valid moves for Tile 2</span>
+                </div>
+                <div>
+                    <div className="key-square valid-move-both"></div>
+                    <span>Valid moves for both</span>
+                </div>
+            </div>
+
             <div className="navigation-buttons">
                 <button onClick={goBack}>Go Back</button>
             </div>

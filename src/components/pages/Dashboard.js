@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../App.css';
 import './Dashboard.css';
 import Tiles from '../../tiles/tiles';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Dashboard({
     rows,
@@ -24,13 +24,27 @@ function Dashboard({
     const [showEndGameModal, setShowEndGameModal] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const maxDimension = 370;
         const squareSize = Math.min(maxDimension / rows, maxDimension / cols);
         setSquareDimensions(squareSize, squareSize);
-        setBoard(initializeBoard(rows, cols, whiteOccupied, blackOccupied));
-    }, [rows, cols]);
+
+        // Check if there's any state passed from the Hints component or any other component
+        if (location.state) {
+            const { board, whiteOccupied, blackOccupied, currentPlayer, rows, cols } = location.state;
+            setBoard(board);
+            setWhiteOccupied(whiteOccupied);
+            setBlackOccupied(blackOccupied);
+            setCurrentPlayer(currentPlayer);
+            setRows(rows);
+            setCols(cols);
+            setCurrentScore(calculateScore(whiteOccupied, blackOccupied));
+        } else {
+            setBoard(initializeBoard(rows, cols)); // Default initialization
+        }
+    }, []);
 
     const handleRowsChange = (e) => {
         setRows(Number(e.target.value));
@@ -149,24 +163,23 @@ function Dashboard({
 
     function initializeBoard(rows, cols) {
         const newBoard = Array.from({ length: rows }, () => Array(cols).fill(null));
-        const whiteOccupied = [];
-        for (let i = 0; i < 2; i++) {
-          whiteOccupied.push([i, 0]); // First column
-        }
+        const whiteOccupied = [[0, 0], [1, 0]];
+        const blackOccupied = [[rows - 1, cols - 1], [rows - 2, cols - 1]];
+
         whiteOccupied.forEach(([row, col]) => {
-          newBoard[row][col] = 'white';
+            newBoard[row][col] = 'white';
         });
-      
-        const blackOccupied = [];
-        for (let i = 0; i < 2; i++) {
-          blackOccupied.push([rows - 1 - i, cols - 1]); // Last column
-        }
+
         blackOccupied.forEach(([row, col]) => {
-          newBoard[row][col] = 'black';
+            newBoard[row][col] = 'black';
         });
-      
+
+        setWhiteOccupied(whiteOccupied);
+        setBlackOccupied(blackOccupied);
+        setCurrentPlayer('white');
+        setCurrentScore(Infinity);
         return newBoard;
-      }
+    }
       
 
     function updateOccupied(occupiedArray, prevRow, prevCol, newRow, newCol) {

@@ -1,5 +1,5 @@
 .hints-board {
-    margin-top: 160px;
+    margin-top: 130px;
 }
 
 .tile {
@@ -12,6 +12,46 @@
     border: 1px solid black;
 }
 
-.valid-move {
-    background-color: yellow; /* Highlight valid move tiles */
+/* Existing styles for valid moves */
+.valid-move-tile1 {
+    background-color: lightgreen; /* Greenish tint for tile1's moves */
+}
+
+.valid-move-tile2 {
+    background-color: lightblue; /* Blueish tint for tile2's moves */
+}
+
+.valid-move-both {
+    background-color: yellow; /* Yellowish tint for moves valid for both tiles */
+}
+
+/* New styles for the pieces */
+.tile1 {
+    background-color: green; /* Green background for tile1 */
+    color: white; /* Optional: White text for better contrast */
+}
+
+.tile2 {
+    background-color: blue; /* Blue background for tile2 */
+    color: white; /* Optional: White text for better contrast */
+}
+
+.hint-key {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.hint-key div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.key-square {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
 }
