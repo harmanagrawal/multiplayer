@@ -1,16 +1,19 @@
-import React from 'react'
-import './tiles.css'
+import React from 'react';
+import './tiles.css';
 
-function tiles({ value, onClick }) {
+function Tiles({ value, onClick, onMouseEnter, onMouseLeave, className }) {
   return (
-    <div className="Square" onClick={onClick}>
+    <div 
+      className={`Square ${className}`} // Dynamically apply className here
+      onClick={onClick} 
+      onMouseEnter={onMouseEnter} 
+      onMouseLeave={onMouseLeave}
+    >
       {value && (
-        <div className={`piece ${value}`}></div>
+        <div className={`piece ${value}`}></div> // The value determines the piece color/class
       )}
     </div>
   );
 }
 
-
-
-export default tiles
+export default Tiles;

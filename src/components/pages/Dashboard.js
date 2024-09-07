@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../App.css';
 import './Dashboard.css';
 import Tiles from '../../tiles/tiles';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function Dashboard({
     rows,
@@ -22,8 +22,8 @@ function Dashboard({
     const [errorMessage, setErrorMessage] = useState('');
     const [currentScore, setCurrentScore] = useState(Infinity);
     const [showEndGameModal, setShowEndGameModal] = useState(false);
-
-    const navigate = useNavigate();
+    const [hoveredTile, setHoveredTile] = useState(null);
+    const [hoveredTileScore, setHoveredTileScore] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
@@ -42,7 +42,10 @@ function Dashboard({
             setCols(cols);
             setCurrentScore(calculateScore(whiteOccupied, blackOccupied));
         } else {
-            setBoard(initializeBoard(rows, cols)); // Default initialization
+            const newBoard = initializeBoard(rows, cols);
+            const initialScore = calculateScore(whiteOccupied, blackOccupied);
+            setCurrentScore(initialScore);  // Ensure score is set at the start of the game
+            setBoard(newBoard);
         }
     }, []);
 
@@ -54,6 +57,25 @@ function Dashboard({
         setCols(Number(e.target.value));
     };
 
+    const adjustBoardSize = (newRows, newCols) => {
+        const newBoard = initializeBoard(newRows, newCols);
+        const updatedWhiteOccupied = adjustOccupiedPieces(whiteOccupied, newRows, newCols);
+        const updatedBlackOccupied = adjustOccupiedPieces(blackOccupied, newRows, newCols);
+
+        setWhiteOccupied(updatedWhiteOccupied);
+        setBlackOccupied(updatedBlackOccupied);
+        setCurrentScore(calculateScore(updatedWhiteOccupied, updatedBlackOccupied));
+        setBoard(newBoard);
+    };
+
+    const adjustOccupiedPieces = (occupied, newRows, newCols) => {
+        return occupied.map(([row, col]) => {
+            const newRow = Math.min(row, newRows - 1);  // Ensure row is within bounds
+            const newCol = Math.min(col, newCols - 1);  // Ensure col is within bounds
+            return [newRow, newCol];
+        });
+    };
+
     const handleTileClick = (row, col) => {
         setErrorMessage('');
 
@@ -63,8 +85,6 @@ function Dashboard({
 
                 // Clone current state to allow rollback
                 const prevBoard = board.map(row => row.slice());
-                const prevWhiteOccupied = [...whiteOccupied];
-                const prevBlackOccupied = [...blackOccupied];
 
                 let updatedOccupied = currentPlayer === 'white'
                     ? updateOccupied(whiteOccupied, prevRow, prevCol, row, col)
@@ -117,6 +137,36 @@ function Dashboard({
         }
     };
 
+    const handleTileHover = (row, col) => {
+        if (selectedPiece && !board[row][col]) {
+            const { row: prevRow, col: prevCol } = selectedPiece;
+            const potentialOccupied = currentPlayer === 'white'
+                ? updateOccupied(whiteOccupied, prevRow, prevCol, row, col)
+                : updateOccupied(blackOccupied, prevRow, prevCol, row, col);
+    
+            const potentialScore = calculateScore(
+                potentialOccupied,
+                currentPlayer === 'white' ? blackOccupied : whiteOccupied
+            );
+    
+            setHoveredTile([row, col]);
+            setHoveredTileScore(potentialScore);
+    
+            // Compare potential score with current score
+            const isBetterMove = potentialScore < currentScore;
+            setHoveredTileScore(potentialScore);
+            return isBetterMove;
+        }
+        return null;
+    };
+    
+    
+    const handleTileHoverLeave = () => {
+        setHoveredTile(null);
+        setHoveredTileScore(null);
+    };
+    
+
     function calculateScore(occupied, opponentOccupied) {
         if (occupied.length !== 2 || opponentOccupied.length !== 2) {
             return Infinity;
@@ -161,10 +211,10 @@ function Dashboard({
         document.documentElement.style.setProperty('--square-height', height + 'px');
     }
 
-    function initializeBoard(rows, cols) {
-        const newBoard = Array.from({ length: rows }, () => Array(cols).fill(null));
-        const whiteOccupied = [[0, 0], [1, 0]];
-        const blackOccupied = [[rows - 1, cols - 1], [rows - 2, cols - 1]];
+    const initializeBoard = (newRows, newCols) => {
+        const newBoard = Array.from({ length: newRows }, () => Array(newCols).fill(null));
+        const whiteOccupied = adjustOccupiedPieces([[0, 0], [1, 0]], newRows, newCols);
+        const blackOccupied = adjustOccupiedPieces([[newRows - 1, newCols - 1], [newRows - 2, newCols - 1]], newRows, newCols);
 
         whiteOccupied.forEach(([row, col]) => {
             newBoard[row][col] = 'white';
@@ -177,10 +227,8 @@ function Dashboard({
         setWhiteOccupied(whiteOccupied);
         setBlackOccupied(blackOccupied);
         setCurrentPlayer('white');
-        setCurrentScore(Infinity);
         return newBoard;
-    }
-      
+    };
 
     function updateOccupied(occupiedArray, prevRow, prevCol, newRow, newCol) {
         const updatedArray = occupiedArray.filter(
@@ -224,11 +272,11 @@ function Dashboard({
                     <div className='input'>
                         <label>
                             Rows:
-                            <input type="number" value={rows} onChange={handleRowsChange} min="1" />
+                            <input type="number" value={rows} onChange={handleRowsChange} min="2" />
                         </label>
                         <label>
                             Columns:
-                            <input type="number" value={cols} onChange={handleColsChange} min="1" />
+                            <input type="number" value={cols} onChange={handleColsChange} min="2" />
                         </label>
                     </div>
                     <div className='tileswrap'
@@ -238,14 +286,24 @@ function Dashboard({
                             gap: '10px'
                         }}>
                         {board.map((row, rowIndex) =>
-                            row.map((tile, colIndex) =>
-                                <Tiles
-                                    key={`${rowIndex}-${colIndex}`}
-                                    value={tile}
-                                    onClick={() => handleTileClick(rowIndex, colIndex)}
-                                    className={selectedPiece && selectedPiece.row === rowIndex && selectedPiece.col === colIndex ? 'selected-piece' : ''}
-                                />
-                            )
+                            row.map((tile, colIndex) => {
+                                const isHovered = hoveredTile && hoveredTile[0] === rowIndex && hoveredTile[1] === colIndex;
+                                const isWorseMove = hoveredTileScore !== null && hoveredTileScore >= currentScore;
+                                return (
+                                    <Tiles
+                                        key={`${rowIndex}-${colIndex}`}
+                                        value={tile}
+                                        onClick={() => handleTileClick(rowIndex, colIndex)}
+                                        onMouseEnter={() => handleTileHover(rowIndex, colIndex)} // Only hover event triggers
+                                        onMouseLeave={handleTileHoverLeave}
+                                        className={`
+                                            ${selectedPiece && selectedPiece.row === rowIndex && selectedPiece.col === colIndex ? 'selected-piece' : ''}
+                                            ${isHovered ? 'hovered-tile' : ''}
+                                            ${isHovered && isWorseMove ? 'worse-move' : ''}
+                                        `}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                     <div className='lower-buttons'>
@@ -257,6 +315,14 @@ function Dashboard({
                 <div className='score'>Score = {currentScore}</div>
                 <div className='error'>{errorMessage}</div>
             </div>
+            <div className='potential-score'>
+                {hoveredTileScore !== null && (
+                    <div>
+                        Potential Score: {hoveredTileScore}
+                    </div>
+                )}
+            </div>
+
             {showEndGameModal && (
                 <div className="modal">
                     <div className="modal-content">

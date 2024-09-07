@@ -10,17 +10,15 @@ function Hints() {
     // Debugging: Log the location state
     console.log("Location State:", location.state);
 
-    // Handle undefined state
     if (!location.state) {
         console.error("No state found, redirecting...");
-        navigate('/'); // Redirect to the home page or another fallback page
+        navigate('/');
         return null;
     }
 
     const { board, currentPlayer, whiteOccupied, blackOccupied, rows, cols } = location.state;
 
     const goBack = () => {
-        // Manually pass state when navigating back
         navigate('/', {
             state: {
                 board,
@@ -120,13 +118,14 @@ function Hints() {
                                 key={`${rowIndex}-${colIndex}`}
                                 className={`tile ${tileClass} ${pieceClass}`}
                             >
-                                {tile}
+                                {/* Display the text for Tile 1 or Tile 2 */}
+                                {isTile1Position && <span className="tile-text">Tile 1</span>}
+                                {isTile2Position && <span className="tile-text">Tile 2</span>}
                             </div>
                         );
                     })
                 )}
             </div>
-
             <div className="hint-key">
                 <div>
                     <div className="key-square valid-move-tile1"></div>

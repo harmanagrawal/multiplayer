@@ -25,4 +25,11 @@
     border-radius: 50%;
     align-items: center;
   }
-  
+
+  .hovered-tile {
+    background-color: limegreen; /* Green hover effect */
+}
+
+.hovered-tile.worse-move {
+    background-color: maroon; /* Red hover effect */
+}

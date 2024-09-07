@@ -14,11 +14,11 @@
 
 /* Existing styles for valid moves */
 .valid-move-tile1 {
-    background-color: lightgreen; /* Greenish tint for tile1's moves */
+    background-color: springgreen; /* Greenish tint for tile1's moves */
 }
 
 .valid-move-tile2 {
-    background-color: lightblue; /* Blueish tint for tile2's moves */
+    background-color: blue; /* Blueish tint for tile2's moves */
 }
 
 .valid-move-both {
@@ -32,7 +32,7 @@
 }
 
 .tile2 {
-    background-color: blue; /* Blue background for tile2 */
+    background-color: midnightblue; /* Blue background for tile2 */
     color: white; /* Optional: White text for better contrast */
 }
 
