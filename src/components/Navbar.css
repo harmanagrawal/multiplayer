@@ -16,15 +16,12 @@
     justify-content: center;
     align-items: center;
     height: 20px;
-    max-width: 470px;
+    max-width: 612px;
   }
-
-  
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(3, auto);
-    grid-gap: 10px;
+    grid-template-columns: repeat(4, auto);
     list-style: none;
     text-align: center;
     width: 60vw;
@@ -90,7 +87,6 @@
   
     .nav-links {
       text-align: center;
-      padding: 2rem;
       width: 100%;
       display: table;
     }

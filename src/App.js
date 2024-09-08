@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Dashboard from './components/pages/Dashboard';
 import Howtoplay from './components/pages/Howtoplay';
 import Hints from './components/pages/Hints';
+import Terminal from './components/pages/Terminal';
 
 function App() {
   const [rows, setRows] = useState(4);
@@ -54,8 +55,9 @@ function App() {
                 setCols={setCols}
               />
             } />
-            <Route path='/how-to-play' element={<Howtoplay />} />
+            <Route path='/rules' element={<Howtoplay />} />
             <Route path='/hints' element={<Hints />} />
+            <Route path='/terminal-positions' element={<Terminal />} />
           </Routes>
         </Router>
       </div>

@@ -64,7 +64,10 @@ function Navbar({ board, currentPlayer, whiteOccupied, blackOccupied, rows, cols
                             <div className='nav-links' onClick={handleHintsClick}>Hints</div>
                         </li>
                         <li className='nav-item'>
-                            <Link to='/how-to-play' className='nav-links' onClick={closedMobileMenu}>How to Play</Link>
+                            <Link to='/rules' className='nav-links' onClick={closedMobileMenu}>Rules</Link>
+                        </li>
+                        <li className='nav-item'>
+                            <Link to='/terminal-positions' className='nav-links' onClick={closedMobileMenu}>Terminal Positions</Link>
                         </li>
                     </ul>
                 </div>
