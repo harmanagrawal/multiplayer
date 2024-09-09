@@ -33,3 +33,7 @@
 .hovered-tile.worse-move {
     background-color: maroon; /* Red hover effect */
 }
+
+.selected-tile {
+  background-color: yellow;
+}

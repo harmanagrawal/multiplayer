@@ -50,31 +50,37 @@ function Dashboard({
     }, []);
 
     const handleRowsChange = (e) => {
-        setRows(Number(e.target.value));
+        const newRows = Number(e.target.value);
+        setRows(newRows);
+        adjustBoardSize(newRows, cols);  // Adjust the board when rows change
     };
-
+    
     const handleColsChange = (e) => {
-        setCols(Number(e.target.value));
+        const newCols = Number(e.target.value);
+        setCols(newCols);
+        adjustBoardSize(rows, newCols);  // Adjust the board when columns change
     };
 
     const adjustBoardSize = (newRows, newCols) => {
-        const newBoard = initializeBoard(newRows, newCols);
+        const newBoard = initializeBoard(newRows, newCols); // Initialize a fresh board with new size
         const updatedWhiteOccupied = adjustOccupiedPieces(whiteOccupied, newRows, newCols);
         const updatedBlackOccupied = adjustOccupiedPieces(blackOccupied, newRows, newCols);
-
+    
         setWhiteOccupied(updatedWhiteOccupied);
         setBlackOccupied(updatedBlackOccupied);
-        setCurrentScore(calculateScore(updatedWhiteOccupied, updatedBlackOccupied));
         setBoard(newBoard);
+        setCurrentScore(calculateScore(updatedWhiteOccupied, updatedBlackOccupied));
     };
+    
 
     const adjustOccupiedPieces = (occupied, newRows, newCols) => {
         return occupied.map(([row, col]) => {
-            const newRow = Math.min(row, newRows - 1);  // Ensure row is within bounds
-            const newCol = Math.min(col, newCols - 1);  // Ensure col is within bounds
+            const newRow = Math.min(row, newRows - 1);
+            const newCol = Math.min(col, newCols - 1);
             return [newRow, newCol];
         });
     };
+    
 
     const handleTileClick = (row, col) => {
         setErrorMessage('');
@@ -213,22 +219,29 @@ function Dashboard({
 
     const initializeBoard = (newRows, newCols) => {
         const newBoard = Array.from({ length: newRows }, () => Array(newCols).fill(null));
-        const whiteOccupied = adjustOccupiedPieces([[0, 0], [1, 0]], newRows, newCols);
-        const blackOccupied = adjustOccupiedPieces([[newRows - 1, newCols - 1], [newRows - 2, newCols - 1]], newRows, newCols);
 
-        whiteOccupied.forEach(([row, col]) => {
-            newBoard[row][col] = 'white';
+        const whiteOccupiedAdjusted = adjustOccupiedPieces([[0, 0], [1, 0]], newRows, newCols);
+        const blackOccupiedAdjusted = adjustOccupiedPieces([[newRows - 1, newCols - 1], [newRows - 2, newCols - 1]], newRows, newCols);
+    
+        whiteOccupiedAdjusted.forEach(([row, col]) => {
+            if (row < newRows && col < newCols) { // Ensure the row and col are within the board bounds
+                newBoard[row][col] = 'white';
+            }
         });
 
-        blackOccupied.forEach(([row, col]) => {
-            newBoard[row][col] = 'black';
+        blackOccupiedAdjusted.forEach(([row, col]) => {
+            if (row < newRows && col < newCols) { // Ensure the row and col are within the board bounds
+                newBoard[row][col] = 'black';
+            }
         });
-
-        setWhiteOccupied(whiteOccupied);
-        setBlackOccupied(blackOccupied);
+    
+        setWhiteOccupied(whiteOccupiedAdjusted);
+        setBlackOccupied(blackOccupiedAdjusted);
         setCurrentPlayer('white');
+    
         return newBoard;
     };
+    
 
     function updateOccupied(occupiedArray, prevRow, prevCol, newRow, newCol) {
         const updatedArray = occupiedArray.filter(
@@ -239,15 +252,24 @@ function Dashboard({
     }
 
     function resetGame() {
-        setWhiteOccupied([[0, 0], [1, 0]]);
-        setBlackOccupied([[3, 3], [2, 3]]);
-        setBoard(initializeBoard(rows, cols, [[0, 0], [1, 0]], [[3, 3], [2, 3]]));
+        const initialWhiteOccupied = [[0, 0], [1, 0]];
+        const initialBlackOccupied = [[rows - 1, cols - 1], [rows - 2, cols - 1]];
+
+        setWhiteOccupied(initialWhiteOccupied);
+        setBlackOccupied(initialBlackOccupied);
+    
+        const newBoard = initializeBoard(rows, cols);
+        setBoard(newBoard);
+
+        const initialScore = calculateScore(initialWhiteOccupied, initialBlackOccupied);
+        setCurrentScore(initialScore);  // Set the initial score for the reset game
+    
         setSelectedPiece(null);
         setCurrentPlayer('white');
-        setCurrentScore(Infinity);
         setErrorMessage('');
         setShowEndGameModal(false);
     }
+    
 
     const handlePlayAgain = () => {
         resetGame();
@@ -289,6 +311,7 @@ function Dashboard({
                             row.map((tile, colIndex) => {
                                 const isHovered = hoveredTile && hoveredTile[0] === rowIndex && hoveredTile[1] === colIndex;
                                 const isWorseMove = hoveredTileScore !== null && hoveredTileScore >= currentScore;
+                                
                                 return (
                                     <Tiles
                                         key={`${rowIndex}-${colIndex}`}
@@ -297,9 +320,9 @@ function Dashboard({
                                         onMouseEnter={() => handleTileHover(rowIndex, colIndex)} // Only hover event triggers
                                         onMouseLeave={handleTileHoverLeave}
                                         className={`
-                                            ${selectedPiece && selectedPiece.row === rowIndex && selectedPiece.col === colIndex ? 'selected-piece' : ''}
                                             ${isHovered ? 'hovered-tile' : ''}
                                             ${isHovered && isWorseMove ? 'worse-move' : ''}
+                                            ${selectedPiece && selectedPiece.row === rowIndex && selectedPiece.col === colIndex ? 'selected-tile' : ''}
                                         `}
                                     />
                                 );

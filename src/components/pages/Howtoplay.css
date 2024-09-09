@@ -30,8 +30,7 @@
   }
   
   .game-image {
-    max-height: 200px;
-    height: auto;
+    height: 100%;
     border: 2px solid #ddd;
     padding: 10px;
     background-color: #f9f9f9;
