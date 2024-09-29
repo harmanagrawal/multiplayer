@@ -38,6 +38,14 @@ function Howtoplay() {
         <strong>Moves:</strong> A player, on their turn, must make a move that decreases the characteristic score of the game 
         by at least one. If they are unable to do so, the player who made the last turn wins.
       </p>
+
+      <p className="details">
+        <strong>Change row and column size</strong> If you wish to change the size of the game board, change it according to your wishes on the row and column bar and the press enter
+      </p>
+
+      <p className="details">
+        <strong>Selected piece:</strong> You can deselect a piece by pressing escape
+      </p>
     </div>
   );
 }

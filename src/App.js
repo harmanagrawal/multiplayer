@@ -6,6 +6,7 @@ import Dashboard from './components/pages/Dashboard';
 import Howtoplay from './components/pages/Howtoplay';
 import Hints from './components/pages/Hints';
 import Terminal from './components/pages/Terminal';
+import initializeBoard from './utils/initializeBoard';
 
 function App() {
   const [rows, setRows] = useState(4);
@@ -16,14 +17,20 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState('white');
   
   useEffect(() => {
-    setBoard(initializeBoard(rows, cols, whiteOccupied, blackOccupied));
+    const adjustedWhiteOccupied = adjustOccupiedPieces(whiteOccupied, rows, cols);
+    const adjustedBlackOccupied = adjustOccupiedPieces(blackOccupied, rows, cols);
+
+    setWhiteOccupied(adjustedWhiteOccupied);
+    setBlackOccupied(adjustedBlackOccupied);
+
+    setBoard(initializeBoard(rows, cols, adjustedWhiteOccupied, adjustedBlackOccupied));
   }, [rows, cols, whiteOccupied, blackOccupied]);
 
-  function initializeBoard(rows, cols, whiteOccupied, blackOccupied) {
-    const newBoard = Array.from({ length: rows }, () => Array(cols).fill(null));
-    whiteOccupied.forEach(([row, col]) => newBoard[row][col] = 'white');
-    blackOccupied.forEach(([row, col]) => newBoard[row][col] = 'black');
-    return newBoard;
+  function adjustOccupiedPieces(occupied, newRows, newCols) {
+    return occupied.map(([row, col]) => [
+      Math.min(row, newRows - 1),
+      Math.min(col, newCols - 1),
+    ]);
   }
 
   return (
