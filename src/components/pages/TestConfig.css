@@ -26,7 +26,6 @@
 .grid-container {
     display: inline-block;
     border: 2px solid #ccc;
-    margin-top: 20px;
 }
 
 .grid-row {
@@ -61,7 +60,7 @@
 
 .piece-selector button {
     margin: 5px;
-    padding: 10px;
+    padding: 5px;
     font-size: 16px;
     cursor: pointer;
 }

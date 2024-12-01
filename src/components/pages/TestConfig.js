@@ -10,6 +10,7 @@ function TestConfig() {
     const [selectedPiece, setSelectedPiece] = useState('white');
     const [remainingPieces, setRemainingPieces] = useState({ white: 1, black: 1 });
     const [isTerminal, setIsTerminal] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     function initializeGrid(testRows, testCols) {
         const newBoard = Array.from({ length: testRows }, () => Array(testCols).fill(null));
@@ -29,25 +30,46 @@ function TestConfig() {
     };
 
     const handleCellClick = (row, col) => {
-        if (remainingPieces[selectedPiece] <= 0) {
-            alert(`No ${selectedPiece} pieces remaining.`);
-            return;
+        if (isEditing) {
+            // Remove a piece in edit mode
+            const currentPiece = board[row][col];
+            if (currentPiece) {
+                const updatedBoard = board.map((r, rowIndex) =>
+                    r.map((cell, colIndex) =>
+                        rowIndex === row && colIndex === col ? null : cell
+                    )
+                );
+
+                setBoard(updatedBoard);
+                setRemainingPieces((prev) => ({
+                    ...prev,
+                    [currentPiece]: prev[currentPiece] + 1,
+                }));
+            }
+        } else {
+            // Add a piece in placement mode
+            if (board[row][col]) {
+                alert('This cell is already occupied.');
+                return;
+            }
+
+            if (remainingPieces[selectedPiece] <= 0) {
+                alert(`No ${selectedPiece} pieces remaining.`);
+                return;
+            }
+
+            const updatedBoard = board.map((r, rowIndex) =>
+                r.map((cell, colIndex) =>
+                    rowIndex === row && colIndex === col ? selectedPiece : cell
+                )
+            );
+
+            setBoard(updatedBoard);
+            setRemainingPieces((prev) => ({
+                ...prev,
+                [selectedPiece]: prev[selectedPiece] - 1,
+            }));
         }
-
-        if (board[row][col]) {
-            alert('Cell is already occupied.');
-            return;
-        }
-
-        const updatedBoard = board.map((r, rowIndex) =>
-            r.map((cell, colIndex) => (rowIndex === row && colIndex === col ? selectedPiece : cell))
-        );
-        setBoard(updatedBoard);
-
-        setRemainingPieces((prev) => ({
-            ...prev,
-            [selectedPiece]: prev[selectedPiece] - 1,
-        }));
     };
 
     function calculateScore(whiteOccupied, blackOccupied) {
@@ -136,7 +158,6 @@ function TestConfig() {
 
     return (
         <div className="test-config-container">
-            <h1>Test Configuration</h1>
             <form onSubmit={handleSubmit} className="config-form">
                 <label>
                     Rows:
@@ -201,8 +222,8 @@ function TestConfig() {
                                 key={colIndex}
                                 onClick={() => handleCellClick(rowIndex, colIndex)}
                             >
-                                {cell === 'white' && '⚪'}
-                                {cell === 'black' && '⚫'}
+                                {cell === 'white'}
+                                {cell === 'black'}
                             </div>
                         ))}
                     </div>
@@ -214,10 +235,25 @@ function TestConfig() {
                 <p>Remaining Black Pieces: {remainingPieces.black}</p>
             </div>
 
-            {remainingPieces.white === 0 && remainingPieces.black === 0 && (
-                <button className="check-config-button" onClick={handleCheckConfiguration}>
-                    Check Configuration
-                </button>
+            {(
+                <div className="action-buttons">
+                    <button
+                        className="check-config-button"
+                        onClick={handleCheckConfiguration}
+                    >
+                        Check Configuration
+                    </button>
+                    <button
+                        className="edit-config-button"
+                        onClick={() => setIsEditing((prev) => !prev)}
+                    >
+                        {isEditing ? 'Place pieces again' : 'Edit Configuration'}
+                    </button>
+                </div>
+            )}
+
+            {isEditing == true && (
+                <p>Select pieces to remove</p>
             )}
 
             {isTerminal !== null && (
