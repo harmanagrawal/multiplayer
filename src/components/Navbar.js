@@ -50,30 +50,33 @@ function Navbar({ board, currentPlayer, whiteOccupied, blackOccupied, rows, cols
         });
     };
 
-    return (
-        <>
-            <nav className='Navbar'>
-                <div className='Navbar-container'>
-                    <ul className={click ? 'nav-menu-active' : 'nav-menu'}>
-                        <li className='nav-item'>
-                            {/* Trigger the handlePlayClick on click */}
-                            <div className='nav-links' onClick={handlePlayClick}>Play</div>
-                        </li>
-                        <li className='nav-item'>
-                            {/* Trigger the handleHintsClick on click */}
-                            <div className='nav-links' onClick={handleHintsClick}>Hints</div>
-                        </li>
-                        <li className='nav-item'>
-                            <Link to='/rules' className='nav-links' onClick={closedMobileMenu}>Rules</Link>
-                        </li>
-                        <li className='nav-item'>
-                            <Link to='/terminal-positions' className='nav-links' onClick={closedMobileMenu}>Terminal Positions</Link>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </>
-    );
-}
+        return (
+            <>
+                <nav className='Navbar'>
+                    <div className='Navbar-container'>
+                        <ul className={click ? 'nav-menu-active' : 'nav-menu'}>
+                            <li className='nav-item'>
+                                {/* Trigger the handlePlayClick on click */}
+                                <div className='nav-links' onClick={handlePlayClick}>Play</div>
+                            </li>
+                            <li className='nav-item'>
+                                {/* Trigger the handleHintsClick on click */}
+                                <div className='nav-links' onClick={handleHintsClick}>Hints</div>
+                            </li>
+                            <li className='nav-item'>
+                                <Link to='/rules' className='nav-links' onClick={closedMobileMenu}>Rules</Link>
+                            </li>
+                            <li className='nav-item'>
+                                <Link to='/terminal-positions' className='nav-links' onClick={closedMobileMenu}>End Positions</Link>
+                            </li>
+                            <li className='nav-item'>
+                                <Link to='/test-config' className='nav-links' onClick={closedMobileMenu}>Test Configurations</Link>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </>
+        );
+    }
 
-export default Navbar;
+    export default Navbar;

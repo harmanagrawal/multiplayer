@@ -9,24 +9,24 @@
     top: 0;
     z-index: 999;
     margin-bottom: -10px;
-  }
+}
   
-  .Navbar-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 20px;
-    max-width: 612px;
-  }
+.Navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  max-width: 821px;
+}
   
   .nav-menu {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, auto);
     list-style: none;
     text-align: center;
     width: 60vw;
     justify-content: end;
-    margin-right: 2rem;
+    margin-right: 1rem;
   }
   
   .nav-item {
@@ -60,6 +60,12 @@
     display: none;
   }
   
+  @media screen and (max-width: 768px) {
+    .nav-links {
+        font-size: 0.8rem; /* Smaller font for smaller screens */
+    }
+}
+
   @media screen and (max-width: 800px) {
     .NavbarItems {
       position: relative;

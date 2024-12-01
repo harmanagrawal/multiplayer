@@ -1,0 +1,76 @@
+.test-config-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.config-form {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin: 10px 0;
+}
+
+.config-form label {
+    display: block;
+    margin: 5px 0;
+}
+
+.config-form input {
+    padding: 5px;
+    font-size: 16px;
+    width: 50%;
+}
+
+.grid-container {
+    display: inline-block;
+    border: 2px solid #ccc;
+    margin-top: 20px;
+}
+
+.grid-row {
+    display: flex;
+}
+
+.grid-cell {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.grid-cell.white {
+    background-color: ivory;
+    color: black;
+}
+
+.grid-cell.black {
+    background-color: black;
+    color: white;
+}
+
+.piece-selector {
+    margin: 10px 0;
+}
+
+.piece-selector button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.piece-selector button.selected {
+    font-weight: bold;
+    border: 2px solid crimson;
+}
+
+.remaining-pieces {
+    margin-top: 10px;
+}

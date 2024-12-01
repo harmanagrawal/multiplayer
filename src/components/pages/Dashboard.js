@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 function Dashboard({
     rows,
     cols,
+    pieces,
     board,
     setBoard,
     whiteOccupied,
@@ -18,7 +19,8 @@ function Dashboard({
     currentPlayer,
     setCurrentPlayer,
     setRows,
-    setCols
+    setCols,
+    setPieces
 }) {
     const [selectedPiece, setSelectedPiece] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
@@ -31,6 +33,7 @@ function Dashboard({
     // Temporary state for input fields
     const [tempRows, setTempRows] = useState(rows);
     const [tempCols, setTempCols] = useState(cols);
+    const [tempPieces, setTempPieces] = useState(pieces)
 
     useEffect(() => {
         const maxDimension = 370;
@@ -48,7 +51,11 @@ function Dashboard({
     
     const handleColsChange = (e) => {
         setTempCols(Number(e.target.value));
-    };      
+    }; 
+    
+    const handlePiecesChange = (e) => {
+        setTempPieces(Number(e.target.value));
+    }; 
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -72,6 +79,7 @@ function Dashboard({
         setErrorMessage('');
         setRows(tempRows);
         setCols(tempCols);
+        setPieces(tempPieces);
 
         const newBoard = Array.from({ length: tempRows }, () => Array(tempCols).fill(null));
         const initialWhiteOccupied = [[0, 0], [1, 0]];
@@ -303,6 +311,15 @@ function Dashboard({
                                 value={tempCols}
                                 onChange={handleColsChange}
                                 min="2"
+                            />
+                        </label>
+                        <label>
+                            Pieces:
+                            <input
+                                type="number"
+                                value={tempPieces}
+                                onChange={handlePiecesChange}
+                                min="1"
                             />
                         </label>
                         <button onClick={handleApplyChanges}>Enter</button>
