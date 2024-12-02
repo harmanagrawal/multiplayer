@@ -28,6 +28,7 @@ function Dashboard({
     const [showEndGameModal, setShowEndGameModal] = useState(false);
     const [hoveredTile, setHoveredTile] = useState(null);
     const [hoveredTileScore, setHoveredTileScore] = useState(null);
+    const [switchPieces, setSwitchPieces] = useState(false);
     const location = useLocation();
 
     // Temporary state for input fields
@@ -98,17 +99,13 @@ function Dashboard({
         setCurrentPlayer('white');
         setShowEndGameModal(false);
     };
-    
-
 
     const handleTileClick = (row, col) => {
         setErrorMessage('');
     
         if (selectedPiece) {
+            const { row: prevRow, col: prevCol, piece } = selectedPiece;
             if (!board[row][col]) {
-                const { row: prevRow, col: prevCol, piece } = selectedPiece;
-    
-                // Clone current state to allow rollback
                 const prevBoard = board.map(r => r.slice());
     
                 let updatedOccupied = currentPlayer === 'white'
@@ -116,15 +113,13 @@ function Dashboard({
                     : updateOccupied(blackOccupied, prevRow, prevCol, row, col);
     
                 const newBoard = board.map(r => r.slice());
-                newBoard[prevRow][prevCol] = null;  // Piece disappears from the original position
+                newBoard[prevRow][prevCol] = null;
                 newBoard[row][col] = piece;
                 setBoard(newBoard);
     
                 const newScore = calculateScore(updatedOccupied, currentPlayer === 'white' ? blackOccupied : whiteOccupied);
                 if (newScore >= currentScore) {
                     setErrorMessage('Invalid move. Score does not decrease.');
-    
-                    // Restore previous state
                     setBoard(prevBoard);
                     setSelectedPiece(null);
                     return;
@@ -139,14 +134,8 @@ function Dashboard({
                 }
     
                 setSelectedPiece(null);
-    
-                // Determine the next player
                 const nextPlayer = currentPlayer === 'white' ? 'black' : 'white';
-    
-                // Define opponent and player occupied positions
                 const opponentOccupied = nextPlayer === 'white' ? whiteOccupied : blackOccupied;
-    
-                // Check if the next player can make any move
                 const gameEnded = checkGameEnd(opponentOccupied, updatedOccupied);
     
                 if (gameEnded) {
@@ -155,7 +144,14 @@ function Dashboard({
                 } else {
                     setCurrentPlayer(nextPlayer);
                 }
-            } else {
+            } else if(board[row][col] == currentPlayer){
+                const newBoard = board.map(r => r.slice());
+                const clickedPiece = board[row][col];
+
+                newBoard[prevRow][prevCol] = piece;
+                setSelectedPiece({ row, col, piece: clickedPiece });
+                setSwitchPieces(false);
+            } else{
                 setErrorMessage('This position is already occupied');
             }
         } else if (board[row][col] && board[row][col] === currentPlayer) {
@@ -173,6 +169,7 @@ function Dashboard({
 
     const handleTileHover = (row, col) => {
         if (selectedPiece && !board[row][col]) {
+            setSwitchPieces(false);
             const { row: prevRow, col: prevCol } = selectedPiece;
             const potentialOccupied = currentPlayer === 'white'
                 ? updateOccupied(whiteOccupied, prevRow, prevCol, row, col)
@@ -190,14 +187,20 @@ function Dashboard({
             const isBetterMove = potentialScore < currentScore;
             setHoveredTileScore(potentialScore);
             return isBetterMove;
+        } else if (selectedPiece && board[row][col] == currentPlayer){
+            setHoveredTile([row, col]);
+            setSwitchPieces(true);
+        } else {
+            setSwitchPieces(false);
+            return null;
         }
-        return null;
     };
     
     
     const handleTileHoverLeave = () => {
         setHoveredTile(null);
         setHoveredTileScore(null);
+        setSwitchPieces(false);
     };
     
 
@@ -366,6 +369,9 @@ function Dashboard({
                     <div>
                         Potential Score: {hoveredTileScore}
                     </div>
+                )}
+                {switchPieces && (
+                    <div> Switch </div>
                 )}
             </div>
 
